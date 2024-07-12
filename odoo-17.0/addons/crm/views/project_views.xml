@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+      <data>
+           <record id="edit_project" model="ir.ui.view">
+        <field name="name">project.view</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+
+ <xpath expr="//page[@name='crm_leads']" position="inside">
+
+                    <field name="crm_kart_pro"/>
+
+            </xpath>
+               </field>
+    </record>
+
+   <record id="action_project_menu" model="ir.actions.act_window">
+       <field name="name">Property Type</field>
+       <field name="res_model">project.project</field>
+       <field name="view_mode">kanban,form</field>
+
+
+
+   </record>
+     </data>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="teknik_template" model="mail.template">
+            <field name="name">My Model Field Change Notification</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="email_to">ertugruloney851@gmail.com</field>
+            <field name="subject">Value Changed for My Field</field>
+            <field name="body_html" type="html">
+           <div>
+                <p>
+                    dasdasdasd
+
+                </p>
+           </div>
+            </field>
+
+        </record>
+    </data>
+</odoo>

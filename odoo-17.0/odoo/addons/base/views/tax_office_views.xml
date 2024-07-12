@@ -1,0 +1,37 @@
+<!-- views/tax_office_views.xml -->
+<odoo>
+    <record id="view_tax_office_form" model="ir.ui.view">
+        <field name="name">tax.office.form</field>
+        <field name="model">tax.office</field>
+        <field name="arch" type="xml">
+            <form string="Tax Office">
+                <group>
+                    <field name="name"/>
+                    <field name="country_id"/>
+                    <field name="city"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tax_office_tree" model="ir.ui.view">
+        <field name="name">tax.office.tree</field>
+        <field name="model">tax.office</field>
+        <field name="arch" type="xml">
+            <tree string="Tax Office">
+                <field name="name"/>
+                <field name="country_id"/>
+                <field name="state_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <menuitem id="menu_tax_office_root" name="Tax Offices" sequence="10"/>
+    <menuitem id="menu_tax_office" name="Tax Offices" parent="menu_tax_office_root" action="action_tax_office"/>
+
+    <record id="action_tax_office" model="ir.actions.act_window">
+        <field name="name">Tax Offices</field>
+        <field name="res_model">tax.office</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
