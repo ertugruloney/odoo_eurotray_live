@@ -21,7 +21,7 @@ import requests
 #%%
 
 url = 'http://localhost:8069'
-db = 'denemedb'
+db = 'denemedbbb'
 username = 'ertugruloney96@gmail.com'
 password = 'deneme'
 
