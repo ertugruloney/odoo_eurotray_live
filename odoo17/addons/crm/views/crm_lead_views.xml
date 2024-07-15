@@ -353,6 +353,7 @@
                                 <field name="estdate" required="preorderinvalid"/>
                                           <field name="extdate" required="preorderinvalid"/>
                                 <field name="ofstat" required="preorderinvalid"/>
+                                        <field name="expected_datee"/>
 
                                     </group>
                                     <group string="Project Information">

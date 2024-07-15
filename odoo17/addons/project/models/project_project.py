@@ -168,6 +168,12 @@ class Project(models.Model):
     date_start = fields.Date(string='Start Date')
     date = fields.Date(string='Expiration Date', index=True, tracking=True,
         help="Date on which this project ends. The timeframe defined on the project is taken into account when viewing its planning.")
+    decma = fields.Char(string='Decision Maker')
+    projecb = fields.Boolean(string='Project Brands')
+    brani = fields.Char(string='Brand Identifier')
+    prodes = fields.Char(string='Product Density')
+    expected_datee=fields.Date(string='Expected tender date'    )
+    ourc = fields.Char(string='Our competitors', required=False)
     allow_task_dependencies = fields.Boolean('Task Dependencies', default=lambda self: self.env.user.has_group('project.group_project_task_dependencies'))
     allow_milestones = fields.Boolean('Milestones', default=lambda self: self.env.user.has_group('project.group_project_milestone'))
     tag_ids = fields.Many2many('project.tags', relation='project_project_project_tags_rel', string='Tags')

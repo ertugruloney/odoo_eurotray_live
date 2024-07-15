@@ -20,24 +20,7 @@
             groups="project.group_project_stages"
             sequence="1"
         />
-        <menuitem
-            name="Tasks"
-            id="menu_project_management"
-            sequence="2"
-        >
-            <menuitem
-                name="My Tasks"
-                id="menu_project_management_my_tasks"
-                action="action_server_view_my_task"
-                sequence="1"
-            />
-            <menuitem
-                name="All Tasks"
-                id="menu_project_management_all_tasks"
-                action="action_view_all_task"
-                sequence="2"
-            />
-        </menuitem>
+
         <menuitem
             name="Reporting"
             id="menu_project_report"

@@ -265,16 +265,17 @@ class Lead(models.Model):
     techni = fields.Boolean(string='Technical Study')
     alternatifproduct = fields.Boolean(string='Alternative product')
     estdate = fields.Datetime('Estimated Order Date')
+    expected_datee = fields.Date(string='Expected tender date',related='project_ids.expected_datee')
     extdate = fields.Datetime('Expected Deadline')
     ofstat = fields.Selection(string='Offer Status',default="expw",
                                     selection=[('expw', 'Exploration work'), ('tender', 'Tender'), ('wore', 'Work received')])
     source = fields.Selection(string='Source',default="sm",
                                     selection=[('mail', 'By Mail'), ('sm', 'Socila Media'),('ar', 'Intermediary')])
-    decma = fields.Char(string='Decision Maker')
-    projecb =fields.Boolean(string='Project Brands')
-    brani = fields.Char(string='Brand Identifier')
-    prodes = fields.Char(string='Product Density')
-    ourc = fields.Char(string='Our competitors' ,required=False)
+    decma = fields.Char(string='Decision Maker' ,related='project_ids.decma')
+    projecb =fields.Boolean(string='Project Brands' ,related='project_ids.projecb')
+    brani = fields.Char(string='Brand Identifier' ,related='project_ids.brani')
+    prodes = fields.Char(string='Product Density' ,related='project_ids.prodes')
+    ourc = fields.Char(string='Our competitors' ,required=False ,related='project_ids.ourc')
     riskc = fields.Boolean(string='Risk status control')
     currenri=fields.Integer(string='Current risk / allocated budget')
     pyr = fields.Selection(string='Payment request', default='check',
