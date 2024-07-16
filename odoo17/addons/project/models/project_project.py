@@ -172,7 +172,7 @@ class Project(models.Model):
     projecb = fields.Boolean(string='Project Brands')
     brani = fields.Char(string='Brand Identifier')
     prodes = fields.Char(string='Product Density')
-    expected_datee=fields.Date(string='Expected tender date'    )
+    expected_datee=fields.Date(string='Expected tender date')
     ourc = fields.Char(string='Our competitors', required=False)
     allow_task_dependencies = fields.Boolean('Task Dependencies', default=lambda self: self.env.user.has_group('project.group_project_task_dependencies'))
     allow_milestones = fields.Boolean('Milestones', default=lambda self: self.env.user.has_group('project.group_project_milestone'))

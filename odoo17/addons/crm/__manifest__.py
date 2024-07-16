@@ -46,6 +46,7 @@
         'data/crm_recurring_plan_data.xml',
         'data/tekni_mail_template.xml',
 
+
         'wizard/crm_lead_lost_views.xml',
         'wizard/crm_lead_to_opportunity_views.xml',
         'wizard/crm_lead_to_opportunity_mass_views.xml',
@@ -69,6 +70,7 @@
         'views/crm_team_views.xml',
         'views/project_views.xml',
         'views/crm_menu_views.xml',
+
         'views/crm_helper_templates.xml',
     ],
     'demo': [

@@ -747,6 +747,9 @@ class Lead(models.Model):
     @api.onchange('stage_id')
     def _onchange_stageid(self):
 
+
+
+
         if int(self.stage_id.id)>=7:
             self.preordershow = False
         else:
@@ -784,9 +787,7 @@ class Lead(models.Model):
             self.afterorderinvalid=False
         else:
             self.afterorderinvalid = True
-    def _send_email_notification(self,record):
-        template_id = self.env.ref('crm.teknik_template')
-        template_id.send_email(self.id, force_send=True)
+
     def _prepare_values_from_partner(self, partner):
         """ Get a dictionary with values coming from partner information to
         copy on a lead. Non-address fields get the current lead
@@ -906,7 +907,15 @@ class Lead(models.Model):
             stage_updated = any(lead.stage_id.id != vals['stage_id'] for lead in self)
             if stage_updated:
                 vals['date_last_stage_update'] = now
+                if self.env['crm.stage'].browse(vals['stage_id']).id ==7:
+
+                    for rec in self:
+                        linkk=self.env['ir.config_parameter'].get_param('web.base.url') + '/web#id=%d&view_type=form&model=crm.lead' % rec.id
+                        template = self.env.ref('crm.stage_guncelleme_mail')
+                        template.with_context(link=linkk).send_mail(rec.id,force_send=True)
+
                 if self.env['crm.stage'].browse(vals['stage_id']).id >=8:
+
                    if self.extdate:
                        pass
                    else:
@@ -940,6 +949,8 @@ class Lead(models.Model):
             self._handle_won_lost(vals)
 
         if not stage_is_won:
+
+
             return super(Lead, self).write(vals)
 
         # stage change between two won stages: does not change the date_closed
@@ -950,7 +961,6 @@ class Lead(models.Model):
         if leads_already_won:
             vals.pop('date_closed', False)
             result = super(Lead, leads_already_won).write(vals)
-
 
         return result
 
