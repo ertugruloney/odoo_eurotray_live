@@ -8,7 +8,7 @@
             <field name="model_id" ref="crm.model_crm_lead"/>
         <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
-                    <div style="justify-content: center; padding:0.6rem;padding-left: 35px;text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;width:40%">
+                    <div>
                         <h2>
                             Hello,
                         </h2>

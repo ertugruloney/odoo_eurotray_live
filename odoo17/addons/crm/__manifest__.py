@@ -16,7 +16,7 @@
         'calendar',
         'resource',
         'utm',
-        'sale_management',
+        'sale',
         'project',
         'web_tour',
         'contacts',
@@ -69,6 +69,7 @@
         'report/crm_opportunity_report_views.xml',
         'views/crm_team_views.xml',
         'views/project_views.xml',
+        'views/sale_order_views.xml',
         'views/crm_menu_views.xml',
 
         'views/crm_helper_templates.xml',

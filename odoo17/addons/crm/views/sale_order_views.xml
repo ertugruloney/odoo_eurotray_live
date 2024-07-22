@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+      <data>
+          <record id="view_order_form" model="ir.ui.view">
+                <field name="name">sale.order.form</field>
+                <field name="model">sale.order</field>
+                <field name="inherit_id" ref="sale.view_order_form"/>
+                 <field name="arch" type="xml">
+                    <xpath expr="//button[@name='action_confirm']" position="replace"/>
+            </field>
+
+ </record>
+          <record id="action_sale_order_menu" model="ir.actions.act_window">
+       <field name="name">Sale order</field>
+       <field name="res_model">sale.order</field>
+       <field name="view_mode">kanban,form</field>
+
+
+
+   </record>
+    </data>
+</odoo>

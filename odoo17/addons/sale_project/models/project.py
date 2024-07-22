@@ -745,8 +745,8 @@ class Project(models.Model):
             if default_line.product_id.service_tracking == 'task_in_project':
                 default_line.task_id.milestone_id = milestone.id
 
-        action = super().action_view_tasks()
-        action['context']['hide_partner'] = self._get_hide_partner()
+        action =5
+
         return action
 
     def action_open_project_vendor_bills(self):

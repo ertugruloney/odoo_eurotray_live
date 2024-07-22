@@ -706,7 +706,7 @@ class Project(models.Model):
             'active_test': self.active
             })
         action['context'] = context
-        return action
+        return context
 
     def action_view_all_rating(self):
         """ return the action to see all the rating of the project and activate default filters"""
@@ -803,6 +803,9 @@ class Project(models.Model):
     def _get_profitability_sequence_per_invoice_type(self):
         return {}
 
+    @api.model
+    def save_action(self):
+      return  True
     def _get_already_included_profitability_invoice_line_ids(self):
         # To be extended to avoid account.move.line overlap between
         # profitability reports.

@@ -56,7 +56,7 @@
                                         <field name="company_currency" invisible="1"/>
                                         <field name="expected_revenue" class="o_input_13ch" widget='monetary' options="{'currency_field': 'company_currency'}"/>
                                         <span class="oe_grey p-2" groups="crm.group_use_recurring_revenues"> + </span>
-                                        <span class="oe_grey p-2" groups="!crm.group_use_recurring_revenues"> at </span>
+                                        <span class="oe_grey p-2" groups="!crm.group_use_recurring_revenues">  </span>
                                         <div class="d-flex align-items-baseline gap-3" groups="crm.group_use_recurring_revenues">
                                             <field name="recurring_revenue" class="o_input_10ch" widget="monetary" options="{'currency_field': 'company_currency'}"/>
                                             <div class="d-flex align-items-baseline">
@@ -76,9 +76,9 @@
                                     <small class="d-inline-block oe_grey h6 mb-0" invisible="is_automated_probability">
                                         <field class="mb-0" name="automated_probability" force_save="1"/> %
                                     </small>
-                                    <div id="probability" class="d-flex align-items-baseline">
+                                    <div id="probability" class="d-flex align-items-baseline" invisible="1">
                                         <field name="is_automated_probability" invisible="1"/>
-                                        <field name="probability" widget="float" class="oe_inline o_input_6ch"/>
+                                        <field name="probability" widget="float" class="oe_inline o_input_6ch" invisible="1"/>
                                         <span class="oe_grey p-2"> %</span>
                                     </div>
                                 </div>
@@ -1136,6 +1136,7 @@
                     <separator/>
                     <filter string="Won" name="won" domain="['&amp;', ('active', '=', True), ('stage_id.is_won', '=', True)]"/>
                     <filter string="Lost" name="lost" domain="['&amp;', ('active', '=', False), ('probability', '=', 0)]"/>
+               
                     <separator/>
                     <filter invisible="1" string="Overdue Opportunities" name="overdue_opp" domain="['&amp;', ('date_closed', '=', False), ('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter invisible="1" string="Late Activities" name="activities_overdue"

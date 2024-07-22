@@ -25,6 +25,7 @@
         parent="crm_menu_root"
         action="crm.action_project_menu"
         sequence="1"/>
+
     <menuitem
         id="menu_crm_opportunities"
         name="My Pipeline"
