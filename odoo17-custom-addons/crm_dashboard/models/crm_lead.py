@@ -100,18 +100,17 @@ class CRMLead(models.Model):
     @api.model
     def get_the_annual_target(self, kwargs):
         """Annual Target: Year To Date Graph"""
-        session_user_id = self.env.uid
+
         self._cr.execute('''SELECT res_users.id, res_users.sales, res_users.sale_team_id, 
                                 (SELECT crm_team.invoiced_target FROM crm_team 
                                 WHERE crm_team.id = res_users.sale_team_id) as invoiced_target 
                                 FROM res_users WHERE res_users.sales IS NOT NULL 
-                                 AND res_users.sale_team_id IS NOT NULL;''' )
+                                 AND res_users.sale_team_id IS NOT NULL;''')
         data2 = self._cr.dictfetchall()
         sales = [rec['sales'] for rec in data2]
         inv_target = [
             rec['invoiced_target'] if rec['invoiced_target'] is not None else 0
             for rec in data2]
-        team_id = data2[-1]['sale_team_id'] if data2 else 0
         target_annual = sum(sales) + sum(inv_target)
         if self.env.user.has_group('sales_team.group_sale_manager'):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
@@ -135,7 +134,7 @@ class CRMLead(models.Model):
         else:
             self._cr.execute(
                 '''SELECT res_users.id,res_users.sales FROM res_users WHERE 
-                 AND res_users.sales is not null;''' )
+                 AND res_users.sales is not null;''')
             data4 = self._cr.dictfetchall()
             sales = []
             for rec in data4:
@@ -143,8 +142,7 @@ class CRMLead(models.Model):
             ytd_target = (sum(sales))
             self._cr.execute('''select sum(expected_revenue) from crm_lead 
             where stage_id=11 AND 
-            Extract(Year FROM date_closed)=Extract(Year FROM DATE(NOW()))'''
-                             % session_user_id)
+            Extract(Year FROM date_closed)=Extract(Year FROM DATE(NOW()))''')
             achieved_won_data = self._cr.dictfetchall()
             achieved_won = [item['sum'] for item in achieved_won_data]
         won = achieved_won[0]
@@ -234,10 +232,10 @@ class CRMLead(models.Model):
         FROM mail_activity_type WHERE mail_activity_type.id = 
         mail_activity.activity_type_id), mail_activity.user_id FROM 
         mail_activity WHERE res_model = 'crm.lead' AND 
-        mail_activity.date_deadline >= '%s' and user_id = %s GROUP BY 
+        mail_activity.date_deadline >= '%s'  GROUP BY 
         mail_activity.activity_type_id, mail_activity.date_deadline,
         mail_activity.summary,mail_activity.res_name,mail_activity.user_id
-        order by mail_activity.date_deadline asc''' % (today, session_user_id))
+        order by mail_activity.date_deadline asc''' % (today))
         data = self._cr.fetchall()
         events = [[record[0], record[1], record[2], record[3],
                    record[4] if record[4] else '',
@@ -352,7 +350,7 @@ class CRMLead(models.Model):
             for i in range(1, int(last_day), 1):
                 day_dict[i] = 0
             self._cr.execute('''select create_date::date,count(id) from crm_lead
-            where probability=0 and active=false and create_date between 
+            where active=false and create_date between 
             (now() - interval '1 month') and now()
             group by create_date order by create_date;''')
             data = self._cr.dictfetchall()
@@ -364,7 +362,7 @@ class CRMLead(models.Model):
         else:
             month_string = str(int(option)) + ' Months'
             self._cr.execute('''select extract(month from create_date),count(id)
-            from crm_lead where probability=0 and active=false and
+            from crm_lead where active=false and
             create_date between (now() - interval '%s') and now()
             group by extract(month from create_date) order by extract(
             month from create_date);''' % month_string)
@@ -386,14 +384,14 @@ class CRMLead(models.Model):
         """Top 5 Won vs Lost Ratio based on Country"""
         self._cr.execute('''SELECT (SELECT name FROM res_country WHERE id=country_id),
                             COUNT(country_id)FROM crm_lead
-                            WHERE probability=100 AND active=true
+                            WHERE active=true
                             GROUP BY country_id
                             ORDER BY COUNT(country_id) DESC''')
         data_won = self._cr.fetchall()
         self._cr.execute('''SELECT (SELECT name FROM res_country WHERE id=country_id),
                                 COUNT(country_id)
                             FROM crm_lead
-                            WHERE probability=0 AND active=false
+                            WHERE active=false
                             GROUP BY country_id
                             ORDER BY COUNT(country_id) DESC''')
         data_lost = self._cr.fetchall()
@@ -408,11 +406,11 @@ class CRMLead(models.Model):
     def get_ratio_based_sp(self, kwargs):
         """Top 5 Won vs Lost Ratio based on Sales Person"""
         self._cr.execute('''select user_id,count(user_id) from crm_lead where
-        probability=100 and active=true group by user_id order by 
+         active=true group by user_id order by 
         count(user_id) desc''')
         data_won = self._cr.fetchall()
         self._cr.execute('''select user_id,count(user_id) from crm_lead where 
-        probability=0 and active=false group by user_id order by 
+        active=false group by user_id order by 
         count(user_id) desc''')
         data_lost = self._cr.fetchall()
         won = [[user_id_obj.name, rec[1]] for rec in data_won for user_id_obj in
@@ -435,11 +433,11 @@ class CRMLead(models.Model):
     def get_ratio_based_sales_team(self, kwargs):
         """Top 5 Won vs Lost Ratio based on Sales Team"""
         self._cr.execute('''select (SELECT name FROM crm_team WHERE crm_team.id 
-        = team_id), count(user_id) from crm_lead where probability=100 and 
+        = team_id), count(user_id) from crm_lead where 
         active=true group by team_id order by count(team_id) desc''')
         data_won = self._cr.fetchall()
         self._cr.execute('''select (SELECT name FROM crm_team WHERE crm_team.id 
-        = team_id), count(user_id) from crm_lead where probability=0 and 
+        = team_id), count(user_id) from crm_lead where 
         active=false group by team_id order by count(team_id) desc''')
         data_lost = self._cr.fetchall()
         won = [[rec[0], rec[1]] for rec in data_won]
@@ -459,8 +457,7 @@ class CRMLead(models.Model):
     def get_lost_lead_by_reason_pie(self, kwargs):
         """Lost Leads by Lost Reason Pie"""
         self._cr.execute('''select lost_reason_id, count(*), (SELECT name FROM 
-        crm_lost_reason WHERE id = lost_reason_id) from crm_lead where 
-        probability=0 and active=false and type='lead' group by lost_reason_id''')
+        crm_lost_reason WHERE id = lost_reason_id) from crm_lead where  active=false and type='lead' group by lost_reason_id''')
         data1 = self._cr.dictfetchall()
         name = [rec["name"] if rec["name"] is not None else "Undefined" for rec
                 in data1]
@@ -472,7 +469,7 @@ class CRMLead(models.Model):
     def get_lost_lead_by_stage_pie(self, kwargs):
         """Lost Leads by Stage Pie"""
         self._cr.execute('''select stage_id, count(*),(SELECT name FROM 
-        crm_stage WHERE id = stage_id) from crm_lead where probability=0 and 
+        crm_stage WHERE id = stage_id) from crm_lead where 
         active=false and type='lead' group by stage_id''')
         data1 = self._cr.dictfetchall()
         name = [rec["name"] for rec in data1]
@@ -583,8 +580,8 @@ class CRMLead(models.Model):
         self._cr.execute('''SELECT res_users.id,res_users.sales,
         res_users.sale_team_id,(SELECT crm_team.invoiced_target FROM crm_team 
         WHERE crm_team.id = res_users.sale_team_id)
-        FROM res_users WHERE res_users.sales is not null and res_users.id=%s
-        AND res_users.sale_team_id is not null;''' % session_user_id)
+        FROM res_users WHERE res_users.sales is not null
+        AND res_users.sale_team_id is not null;''' )
         data2 = self._cr.dictfetchall()
         sales = []
         inv_target = []
@@ -600,8 +597,8 @@ class CRMLead(models.Model):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
             res_users.sale_team_id,(SELECT crm_team.invoiced_target FROM 
             crm_team WHERE crm_team.id = res_users.sale_team_id) FROM 
-            res_users WHERE res_users.id = %s AND res_users.sales is not 
-            null;''' % session_user_id)
+            res_users WHERE res_users.sales is not 
+            null;''')
             data3 = self._cr.dictfetchall()
             sales = []
             inv_target = []
@@ -612,22 +609,22 @@ class CRMLead(models.Model):
                     inv_target = [0]
             ytd_target = (sum(sales) + sum(inv_target))
             self._cr.execute('''select sum(expected_revenue) from crm_lead where
-             stage_id=4 and team_id=%s AND Extract(Year FROM date_closed)=
-             Extract(Year FROM DATE(NOW()))''' % team_id)
+             stage_id=11 AND Extract(Year FROM date_closed)=
+             Extract(Year FROM DATE(NOW()))''')
             achieved_won_data = self._cr.dictfetchall()
             achieved_won = [item['sum'] for item in achieved_won_data]
         else:
             self._cr.execute('''SELECT res_users.id,res_users.sales FROM 
-            res_users WHERE res_users.id = %s AND res_users.sales is not null;
-            ''' % session_user_id)
+            res_users WHERE   res_users.sales is not null;
+            ''' )
             data4 = self._cr.dictfetchall()
             sales = []
             for rec in data4:
                 sales.append(rec['sales'])
             ytd_target = (sum(sales))
             self._cr.execute('''select sum(expected_revenue) from crm_lead where
-             stage_id=4 and user_id=%s AND Extract(Year FROM date_closed)=
-             Extract(Year FROM DATE(NOW()))''' % session_user_id)
+             stage_id=11 AND Extract(Year FROM date_closed)=
+             Extract(Year FROM DATE(NOW()))''')
             achieved_won_data = self._cr.dictfetchall()
             achieved_won = [item['sum'] for item in achieved_won_data]
         won = achieved_won[0]
@@ -635,38 +632,37 @@ class CRMLead(models.Model):
             won = 0
         difference = target_annual - won
         self._cr.execute('''select COUNT(id) from crm_lead WHERE 
-        crm_lead.user_id = '%s' AND Extract(MONTH FROM crm_lead.date_deadline) 
+          Extract(MONTH FROM crm_lead.date_deadline) 
         = Extract( MONTH FROM DATE(NOW())) AND Extract(Year FROM 
         crm_lead.date_deadline) = Extract(Year FROM DATE(NOW()))
-        ''' % session_user_id)
+        ''')
         record = self._cr.dictfetchall()
         rec_ids = [item['count'] for item in record]
         crm_lead_value = rec_ids[0]
         self._cr.execute('''select COUNT(id) from crm_lead WHERE 
-        crm_lead.user_id = %s AND crm_lead.type = 'opportunity' AND 
+        crm_lead.type = 'opportunity' AND 
         Extract(MONTH FROM crm_lead.date_deadline) = Extract(MONTH FROM 
         DATE(NOW())) AND Extract(Year FROM crm_lead.date_deadline
-        ) = Extract(Year FROM DATE(NOW( )))''' % session_user_id)
+        ) = Extract(Year FROM DATE(NOW( )))''' )
         opportunity_data = self._cr.dictfetchall()
         opportunity_data_value = [item['count'] for item in opportunity_data]
         opportunity_value = opportunity_data_value[0]
         self._cr.execute('''select SUM(crm_lead.expected_revenue) from crm_lead 
-        WHERE crm_lead.user_id = %s and type='opportunity' and active='true' 
+        WHERE type='opportunity' and active='true' 
         AND Extract(MONTH FROM crm_lead.date_deadline) = 
         Extract(MONTH FROM DATE(NOW())) AND Extract(Year FROM 
-        crm_lead.date_deadline) = Extract(Year FROM DATE(NOW()))'''
-                         % session_user_id)
+        crm_lead.date_deadline) = Extract(Year FROM DATE(NOW()))''')
         exp_revenue_data = self._cr.dictfetchall()
         exp_revenue_data_value = [item['sum'] for item in exp_revenue_data]
         exp_revenue_value = exp_revenue_data_value[0]
         if exp_revenue_value is None:
             exp_revenue_value = 0
         self._cr.execute('''select SUM(crm_lead.expected_revenue) from crm_lead 
-        WHERE crm_lead.user_id = %s and type='opportunity' and active='true' 
-        and stage_id=4 AND Extract(MONTH FROM crm_lead.date_closed) = 
+        WHERE   type='opportunity' and active='true' 
+        and stage_id=11 AND Extract(MONTH FROM crm_lead.date_closed) = 
         Extract(MONTH FROM DATE(NOW())) AND Extract(Year FROM 
         crm_lead.date_closed) = Extract(Year FROM DATE(NOW()))
-        ''' % session_user_id)
+        ''' )
         revenue_data = self._cr.dictfetchall()
         revenue_data_value = [item['sum'] for item in revenue_data]
         revenue_value = revenue_data_value[0]
@@ -679,27 +675,27 @@ class CRMLead(models.Model):
             self._cr.execute('''select case when b.count_two = 0 then 0 else (
             CAST(a.count_one as float) / CAST(b.count_two as float))end as 
             final_count from (select COUNT(id) as count_one from crm_lead WHERE
-            crm_lead.user_id = '%s' AND crm_lead.active = True AND 
-            crm_lead.probability = 100 AND Extract(MONTH FROM 
+           crm_lead.active = True AND 
+       Extract(MONTH FROM 
             crm_lead.date_deadline) = Extract(MONTH FROM DATE(NOW()))
             AND Extract(Year FROM crm_lead.date_open) = Extract(Year 
             FROM DATE(NOW())))a,(select COUNT(id) as count_two from crm_lead 
-            WHERE crm_lead.user_id = '%s' AND crm_lead.active = False AND 
+            WHERE  crm_lead.active = False AND 
             crm_lead.probability = 0 AND Extract(MONTH FROM 
             crm_lead.date_deadline) = Extract(MONTH FROM DATE(NOW())) AND 
             Extract(Year FROM crm_lead.date_deadline) = Extract(Year FROM 
-            DATE(NOW())))b''' % (session_user_id, session_user_id))
+            DATE(NOW())))b''' )
             ratio_data_value = [row[0] for row in self._cr.fetchall()]
             ratio_value = str(ratio_data_value)[1:-1]
         self._cr.execute('''SELECT active,count(active) FROM crm_lead where 
-        type='opportunity' and active = true and probability = 100 and 
-        user_id=%s AND Extract(MONTH FROM date_closed) = Extract(MONTH FROM 
+        type='opportunity' and active = true 
+         AND Extract(MONTH FROM date_closed) = Extract(MONTH FROM 
         DATE(NOW())) AND Extract(Year FROM date_closed) = Extract(
         Year FROM DATE(NOW())) or type='opportunity' and active = false and 
-        probability = 0 and user_id=%s AND Extract(MONTH FROM date_deadline) = 
+        probability = 0 AND Extract(MONTH FROM date_deadline) = 
         Extract(MONTH FROM DATE(NOW())) AND Extract(Year FROM date_deadline) = 
         Extract(Year FROM DATE(NOW())) GROUP BY active
-        ''' % (session_user_id, session_user_id))
+        ''' )
         record_opportunity = dict(self._cr.fetchall())
         opportunity_ratio_value = 0.0
         if record_opportunity == {}:
@@ -1128,7 +1124,7 @@ class CRMLead(models.Model):
             exp_revenue_value = 0
         self._cr.execute('''select SUM(crm_lead.expected_revenue) from 
         crm_lead WHERE crm_lead.user_id = %s and type='opportunity' 
-        and active='true' and stage_id=4 AND Extract(
+        and active='true' and stage_id=11 AND Extract(
         MONTH FROM crm_lead.date_closed) = Extract(MONTH FROM DATE(NOW()))
         AND Extract(Week FROM crm_lead.date_closed) = 
         Extract(Week FROM DATE(NOW())) AND Extract(Year 
