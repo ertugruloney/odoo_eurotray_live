@@ -105,7 +105,7 @@ class CRMLead(models.Model):
                                 (SELECT crm_team.invoiced_target FROM crm_team 
                                 WHERE crm_team.id = res_users.sale_team_id) as invoiced_target 
                                 FROM res_users WHERE res_users.sales IS NOT NULL 
-                                AND res_users.id=%s AND res_users.sale_team_id IS NOT NULL;''' % session_user_id)
+                                 AND res_users.sale_team_id IS NOT NULL;''' )
         data2 = self._cr.dictfetchall()
         sales = [rec['sales'] for rec in data2]
         inv_target = [
@@ -117,8 +117,7 @@ class CRMLead(models.Model):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
             res_users.sale_team_id, (SELECT crm_team.invoiced_target FROM 
             crm_team WHERE crm_team.id = res_users.sale_team_id) FROM res_users 
-            WHERE res_users.id = %s AND res_users.sales is not null;'''
-                             % session_user_id)
+            WHERE   res_users.sales is not null;''')
             data3 = self._cr.dictfetchall()
             sales = []
             inv_target = []
@@ -129,22 +128,21 @@ class CRMLead(models.Model):
                     inv_target = [0]
             ytd_target = (sum(sales) + sum(inv_target))
             self._cr.execute('''select sum(expected_revenue) from crm_lead 
-            where stage_id=4 and team_id=%s AND Extract(Year FROM date_closed)=
-            Extract(Year FROM DATE(NOW()))''' % team_id)
+            where stage_id=11 AND Extract(Year FROM date_closed)=
+            Extract(Year FROM DATE(NOW()))''')
             achieved_won_data = self._cr.dictfetchall()
             achieved_won = [item['sum'] for item in achieved_won_data]
         else:
             self._cr.execute(
                 '''SELECT res_users.id,res_users.sales FROM res_users WHERE 
-                res_users.id = %s AND res_users.sales is not null;''' %
-                session_user_id)
+                 AND res_users.sales is not null;''' )
             data4 = self._cr.dictfetchall()
             sales = []
             for rec in data4:
                 sales.append(rec['sales'])
             ytd_target = (sum(sales))
             self._cr.execute('''select sum(expected_revenue) from crm_lead 
-            where stage_id=4 and user_id=%s AND 
+            where stage_id=11 AND 
             Extract(Year FROM date_closed)=Extract(Year FROM DATE(NOW()))'''
                              % session_user_id)
             achieved_won_data = self._cr.dictfetchall()
