@@ -163,7 +163,16 @@ export class CRMDashboard extends Component {
             .then(function(res) {
                 self.top_sp_by_invoice = res['sales_person_invoice'];
             });
-        return $.when(def0, def1, def2, def3, def4, def5, def6, def8, def9, def10, def11, def12, def13,def14,def15);
+        var def16 = jsonrpc('/web/dataset/call_kw/crm.lead/get_count_lost_win', {
+                model: "crm.lead",
+                method: "get_count_lost_win",
+                args: [{}],
+                kwargs: {},
+            })
+            .then(function(res) {
+                self.get_count_lost_win = res['l_w_ratio'];
+            });
+        return $.when(def0, def1, def2, def3, def4, def5, def6, def8, def9, def10, def11, def12, def13,def14,def15,def16);
     }
     /**
      * Handles the change event for income and expense values.
@@ -469,7 +478,7 @@ export class CRMDashboard extends Component {
                 [false, 'form']
             ],
             domain: [
-                ['user_id', '=', session.uid],
+
                 ['type', '=', 'opportunity'],
                 ['active', '=', true]
             ],
@@ -527,7 +536,7 @@ export class CRMDashboard extends Component {
                 [false, 'form']
             ],
             domain: [
-                ['user_id', '=', session.uid],
+
                 ['type', '=', 'opportunity']
             ],
             target: 'current',

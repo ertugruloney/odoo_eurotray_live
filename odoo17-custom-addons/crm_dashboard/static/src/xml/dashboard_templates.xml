@@ -67,7 +67,7 @@
                                     <t t-esc="get_count_opportunities"/>
                                 </span>
                             </h3>
-                            <h4>My Opportunities
+                            <h4> Opportunities
                             </h4>
                         </div>
                     </div>
@@ -116,10 +116,7 @@
                         <div class="dashboard-card__details">
                             <h3>
                                 <span>
-                                    <div id="total_revenue_this_year"/>
-                                    <div id="total_revenue_this_quarter"/>
-                                    <div id="total_revenue_this_month"/>
-                                    <div id="total_revenue_this_week"/>
+                                    <t t-esc="get_count_lost_win"/>
                                 </span>
                             </h3>
                             <h4>Opportunity Win Loss Ratio</h4>
@@ -338,32 +335,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="leads_campaign_pie_div half_chart chart-container card-shadow">
-                        <h3 class="h5">Leads group by Campaign</h3>
-                        <hr/>
-                        <div class="graph_canvas">
-                            <canvas class="campaign_source" width="200"
-                                    height="120"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-12 col-md-4">
-                    <div class="leads_medium_pie_div half_chart chart-container card-shadow">
-                        <h3 class="h5">Leads group by Medium</h3>
-                        <hr/>
-                        <div class="graph_canvas">
-                            <canvas class="medium_leads" width="200"
-                                    height="120"/>
-                        </div>
-                    </div>
-                    <div class="leads_source_pie_div half_chart chart-container card-shadow">
-                        <h3 class="h5">Leads group by Source</h3>
-                        <hr/>
-                        <div class="graph_canvas">
-                            <canvas class="source_lead" width="200"
-                                    height="120"/>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="row mt-5">
@@ -523,7 +495,7 @@
                                         Last 12 Months
                                     </option>
                                     <option id="lost_last_6months"
-                                            value="lost_last_6months">
+                                            value="Lost Opportunity/Lead Graph">
                                         Last 6 Months
                                     </option>
                                     <option id="lost_last_month"

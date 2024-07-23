@@ -212,9 +212,9 @@ class CRMLead(models.Model):
             return total_rev
 
         queries = [
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE user_id={session_user_id} AND type='opportunity' AND active='true'",
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE user_id={session_user_id} AND type='opportunity' AND active='false' AND stage_id='4'",
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE user_id={session_user_id} AND type='opportunity' AND active='false' AND probability='0' AND active='false'"
+            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='true'",
+            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='true' AND stage_id='11'",
+            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='false' AND probability='0' AND active='false'"
         ]
         total_expected_revenue, total_won_rev, total_lost_rev = [
             fetch_total_revenue(query) for query in queries]
@@ -274,11 +274,10 @@ class CRMLead(models.Model):
         """Monthly Goal Gauge"""
         uid = request.session.uid
         leads = self.env['crm.lead'].search([
-            ('date_deadline', '!=', False), ('user_id', '=', uid),
+            ('date_deadline', '!=', False),
             ('type', '=', 'opportunity')])
         leads_won = self.env['crm.lead'].search([
-            ('date_closed', '!=', False), ('stage_id', '=', 4),
-            ('user_id', '=', uid), ('type', '=', 'opportunity')])
+            ('date_closed', '!=', False), ('stage_id', '=', 11), ('type', '=', 'opportunity')])
         currency_symbol = self.env.company.currency_id.symbol
         achievement = sum(won.expected_revenue for won in leads_won.filtered(
             lambda a: a.date_closed.month == fields.date.today().month and
@@ -298,10 +297,10 @@ class CRMLead(models.Model):
         user = self.env.user
         self._cr.execute('''SELECT user_id, id, expected_revenue, name, company_id
                             FROM crm_lead 
-                            WHERE expected_revenue IS NOT NULL AND user_id = %s
+                            WHERE expected_revenue IS NOT NULL 
                             GROUP BY user_id, id 
                             ORDER BY expected_revenue DESC 
-                            LIMIT 10''' % user.id)
+                            LIMIT 10''')
         data1 = self._cr.fetchall()
         top_revenue = [
             [self.env['res.users'].browse(rec[0]).name, rec[1], rec[2],
@@ -530,6 +529,31 @@ class CRMLead(models.Model):
         """all opportunities Count Card"""
         count_opportunities = self.env['crm.lead'].search_count([])
         return {'count_opportunities': count_opportunities}
+    @api.model
+    def get_count_lost_win(self, kwargs):
+        def fetch_total_revenue(query):
+            self._cr.execute(query)
+            total_rev_data = self._cr.dictfetchall()
+            total_rev = total_rev_data[0]['total_lost'] if total_rev_data and \
+                                                        total_rev_data[0][
+                                                            'total_lost'] else 0
+            return total_rev
+        queries = [f"SELECT COUNT(*) as total_lost FROM crm_lead WHERE  type='opportunity' AND active='false' AND probability='0' AND active='false'"]
+
+
+        lostt=fetch_total_revenue(queries[0])
+
+        """funnel chart"""
+        stage_ids = self.env["crm.stage"].search([("is_won","=",True)])
+        crm_list = []
+        for stage in stage_ids:
+            leads = self.search_count([("stage_id", "=", stage.id)])
+            crm_list.append( int(leads))
+
+        try:
+         return {'l_w_ratio': (crm_list[0]/lostt)*100 }
+        except:
+            return {'l_w_ratio':0}
     @api.model
     def get_top_sp_by_invoice(self, kwargs):
         """Top 10 Sales Person by Invoice Table"""
