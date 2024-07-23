@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="stage_guncelleme_mail" model="mail.template">
             <field name="name">Customer Info Update Notification</field>
-            <field name="email_to">ertugruloney96@gmail.com</field>
+            <field name="email_to">mustafa@stallionanalytics.com</field>
             <field name="subject">Pre-order opportunities</field>
             <field name="model_id" ref="crm.model_crm_lead"/>
         <field name="body_html" type="html">
