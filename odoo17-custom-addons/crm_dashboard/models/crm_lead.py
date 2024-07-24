@@ -111,7 +111,7 @@ class CRMLead(models.Model):
         inv_target = [
             rec['invoiced_target'] if rec['invoiced_target'] is not None else 0
             for rec in data2]
-        target_annual = sum(sales) + sum(inv_target)
+        target_annual = sum(sales)
         if self.env.user.has_group('sales_team.group_sale_manager'):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
             res_users.sale_team_id, (SELECT crm_team.invoiced_target FROM 
@@ -125,7 +125,7 @@ class CRMLead(models.Model):
                 inv_target.append(rec['invoiced_target'])
                 if inv_target == [None]:
                     inv_target = [0]
-            ytd_target = (sum(sales) + sum(inv_target))
+            ytd_target = (sum(sales))
             self._cr.execute('''select sum(expected_revenue) from crm_lead 
             where stage_id=11 AND Extract(Year FROM date_closed)=
             Extract(Year FROM DATE(NOW()))''')
@@ -592,7 +592,7 @@ class CRMLead(models.Model):
             if inv_target == [None]:
                 inv_target = [0]
             team_id = rec['sale_team_id']
-        target_annual = (sum(sales) + sum(inv_target))
+        target_annual = (sum(sales))
         if self.env.user.has_group('sales_team.group_sale_manager'):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
             res_users.sale_team_id,(SELECT crm_team.invoiced_target FROM 
