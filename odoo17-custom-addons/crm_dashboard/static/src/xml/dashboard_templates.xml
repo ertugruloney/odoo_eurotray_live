@@ -167,10 +167,7 @@
                                 <div
                                         id="target"/>
                             </h5>
-                            <h5 class="sub_title d-flex">YtD Target :
-                                <div
-                                        id="ytd_target"/>
-                            </h5>
+
                             <h5 class="sub_title d-flex">Achieved Won :
                                 <div
                                         id="won"/>

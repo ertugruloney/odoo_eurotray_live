@@ -148,8 +148,8 @@ class CRMLead(models.Model):
         won = achieved_won[0]
         if won is None:
             won = 0
-        value = [target_annual, ytd_target, won]
-        name = ["Annual Target", "YtD target", "Won"]
+        value = [target_annual, won]
+        name = ["Annual Target", "Won"]
         final = [value, name]
         return final
 
@@ -592,7 +592,7 @@ class CRMLead(models.Model):
             if inv_target == [None]:
                 inv_target = [0]
             team_id = rec['sale_team_id']
-        target_annual = (sum(sales))
+        target_annual = (sum(sales) )
         if self.env.user.has_group('sales_team.group_sale_manager'):
             self._cr.execute('''SELECT res_users.id,res_users.sales,
             res_users.sale_team_id,(SELECT crm_team.invoiced_target FROM 
