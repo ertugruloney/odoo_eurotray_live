@@ -201,23 +201,30 @@ class CRMLead(models.Model):
 
         def fetch_total_revenue(query):
             self._cr.execute(query)
-            total_rev_data = self._cr.dictfetchall()
-            total_rev = total_rev_data[0]['revenue'] if total_rev_data and \
-                                                        total_rev_data[0][
-                                                            'revenue'] else 0
-            return total_rev
+            total_rev_data = self._cr.fetchall()
+
+            return total_rev_data
 
         queries = [
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='true'",
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='true' AND stage_id='11'",
-            f"SELECT sum(expected_revenue) as revenue FROM crm_lead WHERE  type='opportunity' AND active='false' AND probability='0' AND active='false'"
+            f"SELECT sum(expected_revenue) as revenue, user_id FROM crm_lead WHERE  type='opportunity' AND active='true' AND stage_id!='11' GROUP BY user_id"
+
         ]
-        total_expected_revenue, total_won_rev, total_lost_rev = [
-            fetch_total_revenue(query) for query in queries]
-        exp_revenue_without_won = total_expected_revenue - total_won_rev
-        revenue_pie_count = [exp_revenue_without_won, total_won_rev,
-                             total_lost_rev]
-        revenue_pie_title = ['Expected without Won', 'Won', 'Lost']
+
+        data1 =fetch_total_revenue(queries[0])
+        name = [
+            self.env['res.users'].browse(rec[1]).name
+            for rec in data1]
+        print(name)
+        revenue=[
+            rec[0]
+            for rec in data1]
+        print(revenue)
+
+
+
+
+        revenue_pie_count = revenue
+        revenue_pie_title = name
         revenue_data = [revenue_pie_count, revenue_pie_title]
         return revenue_data
 

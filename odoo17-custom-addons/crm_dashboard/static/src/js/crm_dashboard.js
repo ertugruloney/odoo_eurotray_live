@@ -1164,7 +1164,12 @@ export class CRMDashboard extends Component {
                     backgroundColor: [
                         "#003f5c",
                         "#ff7c43",
-                        "#f95d6a"
+                        "#f95d6a",
+                        '#FF00FF',
+                        '#00CED1',
+                        '#228B22',
+                        '#66CDAA'
+
                     ],
                     borderColor: [
                         "#003f5c",

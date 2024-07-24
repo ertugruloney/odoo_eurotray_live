@@ -265,41 +265,6 @@
     <t t-name="Admincrm">
         <section class="dashboard_main_section" id="main_section_admin">
             <div class="row mt-5">
-                <div class="col-sm-12 col-md-4">
-                    <div class="top_deals_div chart-container card-shadow">
-                        <h2>Top Deals</h2>
-                        <hr/>
-                        <div class="items-table">
-                            <div class="item-container">
-                                <t t-foreach="top_deals" t-as="activity"
-                                   t-key="activity">
-                                    <div class="item-header">
-                                        <div class="count-container">
-                                            <t t-esc="activity[7]"/>
-                                        </div>
-                                        <div class="item-title pl-3">
-                                            <h3><t t-esc="activity[3]"/>
-                                                .
-                                                <t t-esc="activity[6]"/>
-                                                <t t-esc="activity[2]"/>
-                                            </h3>
-                                            <div class="item-content">
-                                                <ul>
-                                                    <li>
-                                                        Sales Person:
-                                                        <t t-esc="activity[0]"/>
-                                                        ,Team:
-                                                        <t t-esc="activity[5]"/>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </t>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-12 col-sm-12 col-md-4">
                     <div class="monthly_goal_div half_chart chart-container card-shadow">
                         <h3 class="h5">Monthly Goal</h3>
@@ -331,11 +296,39 @@
                                 </span>
                             </div>
                         </div>
+
+                    </div>
+<div class="chart-container card-shadow">
+                        <h3 class="h5">Top Country Wise Count</h3>
+                        <hr/>
+                        <table class="table table-hover"
+                               id="country_count_table">
+                            <thead>
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="top_country_count"
+                                   t-as="activity" t-key="activity">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="activity[0]"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="activity[1]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
                     </div>
 
+
                 </div>
-            </div>
-            <div class="row mt-5">
+
+
                 <div class="top_sp_revenue_div col-12 col-sm-12 col-md-4">
                     <div class="chart-container card-shadow">
                         <h3 class="h5">Top Salesperson Revenue</h3>
@@ -366,6 +359,7 @@
                     </div>
                 </div>
                 <div class="top_country_revenue_div col-12 col-sm-12 col-md-4">
+
                     <div class="chart-container card-shadow">
                         <h3 class="h5">Top Country Wise Revenue</h3>
                         <hr/>
@@ -394,35 +388,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="top_country_count_div col-12 col-sm-12 col-md-4">
-                    <div class="chart-container card-shadow">
-                        <h3 class="h5">Top Country Wise Count</h3>
-                        <hr/>
-                        <table class="table table-hover"
-                               id="country_count_table">
-                            <thead>
-                                <tr>
-                                    <th>Country</th>
-                                    <th>Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="top_country_count"
-                                   t-as="activity" t-key="activity">
-                                    <tr>
-                                        <td>
-                                            <t t-esc="activity[0]"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="activity[1]"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+
+           </div>
             <div class="row mt-5">
                 <div class="recent_activity_div col-12 col-sm-12 col-md-4">
                     <div class="chart-container card-shadow">
