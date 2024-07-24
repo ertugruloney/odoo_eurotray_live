@@ -607,7 +607,9 @@ class CRMLead(models.Model):
                 inv_target.append(rec['invoiced_target'])
                 if inv_target == [None]:
                     inv_target = [0]
-            ytd_target = (sum(sales) + sum(inv_target))
+            print('fdsfa')
+            print(inv_target)
+            ytd_target = (sum(sales))
             self._cr.execute('''select sum(expected_revenue) from crm_lead where
              stage_id=11 AND Extract(Year FROM date_closed)=
              Extract(Year FROM DATE(NOW()))''')
