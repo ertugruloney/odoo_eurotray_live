@@ -916,12 +916,20 @@ class Lead(models.Model):
 
                 if self.env['crm.stage'].browse(vals['stage_id']).id >=8:
 
+
                    if self.extdate:
                        pass
                    else:
 
-                       raise UserError(_('Pease fill in the mandatory fields on the pre-order page'))
+                       raise UserError(_('Please fill in the mandatory fields on the pre-order page'))
                        return self
+                if self.env['crm.stage'].browse(vals['stage_id']).id >= 11:
+                    if self.orderno:
+                        pass
+                    else:
+
+                        raise UserError(_('Please fill in the mandatory fields on the after-order page'))
+                        return self
 
             if stage_updated and vals.get('stage_id'):
                 stage = self.env['crm.stage'].browse(vals['stage_id'])

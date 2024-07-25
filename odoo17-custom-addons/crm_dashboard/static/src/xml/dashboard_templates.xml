@@ -331,7 +331,7 @@
 
                 <div class="top_sp_revenue_div col-12 col-sm-12 col-md-4">
                     <div class="chart-container card-shadow">
-                        <h3 class="h5">Top Salesperson Revenue</h3>
+                        <h3 class="h5">Top Opportunity Revenue</h3>
                         <hr/>
                         <table class="table table-hover"
                                id="salesperson_revenue_table">
